@@ -64,6 +64,7 @@ android {
 
 dependencies {
     def coreCtxVersion = "1.9.0"
+    def materialVersion = "1.3.1"
     def material3Version = "1.0.1"
     def lifeCycleVersion = "2.5.1"
     def activityComposeVersion = "1.6.1"
@@ -83,6 +84,7 @@ dependencies {
 
     implementation "androidx.core:core-ktx:$coreCtxVersion"
     implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material:material:$materialVersion"
     implementation "androidx.compose.material3:material3:$material3Version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion"

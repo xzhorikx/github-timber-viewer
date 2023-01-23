@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">github-timber-viewer</string>
+    <string name="app_bar_title">Timber Contributors</string>
     <string name="error_message_template">Error: %1$s</string>
 </resources>

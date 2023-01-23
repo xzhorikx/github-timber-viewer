@@ -7,6 +7,6 @@ import alex.zhurkov.github_timber_viewer.domain.usecase.GitHubContributorsUseCas
 class GitHubContributorsUseCaseImpl(
     private val gitHubRepository: GitHubRepository
 ) : GitHubContributorsUseCase {
-    override suspend fun getContributors(page: Int): GitHubContributorsPage =
-        gitHubRepository.getContributors(page)
+    override suspend fun getContributors(page: Int, skipCache: Boolean): GitHubContributorsPage =
+        gitHubRepository.getContributors(page = page, skipCache = skipCache)
 }

@@ -46,6 +46,7 @@ abstract class BaseViewModel<A : UIAction, C : UIStateChange, S : UIState, M : U
     protected abstract suspend fun provideChangesObservable(): Flow<C>
     protected open fun onObserverActive(isFirstTime: Boolean) {}
     protected open fun onObserverInactive() {}
+    protected open fun onStateUpdated(oldState: S, newState: S) {}
     protected abstract fun processAction(action: A)
     val observableEvents: LiveData<UIEvent> = event
     val observableModel: LiveData<M> = modelLiveData
@@ -83,7 +84,11 @@ abstract class BaseViewModel<A : UIAction, C : UIStateChange, S : UIState, M : U
                 .flatMapConcat { change ->
                     Timber.e("Change received: [$change]")
                     flow {
-                        emit(reducer.reduce(state, change).also { this@BaseViewModel.state = it })
+                        val oldState = state
+                        emit(reducer.reduce(state, change).also {
+                            this@BaseViewModel.state = it
+                            onStateUpdated(oldState = oldState, newState = it)
+                        })
                     }
                 }
                 .distinctUntilChanged()

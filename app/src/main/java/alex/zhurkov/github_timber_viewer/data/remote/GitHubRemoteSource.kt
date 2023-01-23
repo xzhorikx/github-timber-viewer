@@ -8,6 +8,7 @@ interface GitHubRemoteSource {
     @GET("repos/JakeWharton/timber/contributors")
     suspend fun getContributorsPage(
         @Header("page") page: Int,
-        @Header("per_page") limit: Int
+        @Header("per_page") limit: Int,
+        @Header("Cache-Control") cacheControl: String
     ): List<GitHubContributorResponse>
 }

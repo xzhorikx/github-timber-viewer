@@ -7,7 +7,10 @@ import alex.zhurkov.github_timber_viewer.feature.main.model.GitHubContributerIte
 class MainStateToModelMapper : StateToModelMapper<MainActivityState, MainActivityModel> {
     override fun mapStateToModel(state: MainActivityState): MainActivityModel {
         val items = mapContributors(pages = state.pages, isPageLoading = state.isPageLoading)
-        return MainActivityModel(items = items)
+        return MainActivityModel(
+            items = items,
+            isRefreshing = state.isRefreshing
+        )
     }
 
     private fun mapContributors(

@@ -1,8 +1,11 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package alex.zhurkov.github_timber_viewer.feature.main
 
 import alex.zhurkov.github_timber_viewer.R
 import alex.zhurkov.github_timber_viewer.common.arch.UIEvent
 import alex.zhurkov.github_timber_viewer.feature.main.di.MainActivityComponent
+import alex.zhurkov.github_timber_viewer.feature.main.presentation.MainActivityAction
 import alex.zhurkov.github_timber_viewer.feature.main.presentation.MainActivityEvent
 import alex.zhurkov.github_timber_viewer.feature.main.presentation.MainActivityViewModel
 import alex.zhurkov.github_timber_viewer.feature.main.presentation.MainActivityViewModelFactory
@@ -14,12 +17,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Observer
 import javax.inject.Inject
 
@@ -38,23 +42,33 @@ class MainActivity : ComponentActivity() {
         component.inject(this)
         viewModel.observableEvents.observe(this, Observer(::renderEvent))
         setContent {
+            val scrollBehavior =
+                TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
             GithubtimberviewerTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    topBar = {
+                        TopAppBar(
+                            title = { Text(stringResource(id = R.string.app_bar_title)) },
+                            scrollBehavior = scrollBehavior
+                        )
+                    }
+                ) { paddingValues ->
                     MainScreen(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(
-                                PaddingValues(
-                                    start = dimensionResource(id = R.dimen.padding_16),
-                                    end = dimensionResource(id = R.dimen.padding_16),
-                                    top = dimensionResource(id = R.dimen.padding_16)
-                                )
-                            ),
+                        modifier = Modifier.padding(
+                            PaddingValues(
+                                start = dimensionResource(id = R.dimen.padding_16),
+                                end = dimensionResource(id = R.dimen.padding_16),
+                                top = paddingValues.calculateTopPadding(),
+                                bottom = paddingValues.calculateBottomPadding()
+                            )
+                        ),
                         uiModel = viewModel.observableModel,
+                        onPullToRefresh = { viewModel.dispatch(MainActivityAction.Refresh) },
+                        onLastItemVisible = { viewModel.dispatch(MainActivityAction.LastVisibleItemChanged(id = it)) }
                     )
                 }
             }

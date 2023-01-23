@@ -51,9 +51,7 @@ class NetworkModule {
     fun gitHubHttpClient(
         builder: OkHttpClient.Builder,
         @LoggingInterceptor loggingInterceptor: Interceptor,
-        @CacheInterceptor cacheInterceptor: Interceptor,
     ): OkHttpClient = builder
-        .addInterceptor(cacheInterceptor)
         .addInterceptor(loggingInterceptor)
         .build()
 

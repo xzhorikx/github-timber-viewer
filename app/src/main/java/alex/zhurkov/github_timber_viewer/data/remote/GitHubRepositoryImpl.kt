@@ -6,16 +6,22 @@ import alex.zhurkov.github_timber_viewer.domain.mapper.Mapper
 import alex.zhurkov.github_timber_viewer.domain.model.GitHubContributor
 import alex.zhurkov.github_timber_viewer.domain.model.GitHubContributorsPage
 import alex.zhurkov.github_timber_viewer.domain.repository.GitHubRepository
+import kotlinx.coroutines.delay
 
 class GitHubRepositoryImpl(
     private val configSource: ConfigSource,
     private val remoteSource: GitHubRemoteSource,
     private val contributorRemoteMapper: Mapper<GitHubContributorResponse, GitHubContributor>
 ) : GitHubRepository {
-    override suspend fun getContributors(page: Int): GitHubContributorsPage {
+    override suspend fun getContributors(page: Int, skipCache: Boolean): GitHubContributorsPage {
+        val cacheControl = when (skipCache) {
+            true -> "no-cache"
+            false -> "public, max-stale=${configSource.cacheStaleSec}"
+        }
         val result = remoteSource.getContributorsPage(
             limit = configSource.pageSize,
-            page = page
+            page = page,
+            cacheControl = cacheControl
         )
         return GitHubContributorsPage(
             pageId = page,
