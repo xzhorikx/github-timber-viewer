@@ -1,16 +1,17 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
     namespace 'alex.zhurkov.github_timber_viewer'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "alex.zhurkov.github_timber_viewer"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -21,7 +22,22 @@ android {
     }
 
     buildTypes {
+        def pageSize = "20"
+        def callTimeOutSec = "5"
+        def cacheStaleSec = "86400" // 60 * 60 * 24, 1 day
+        def cacheSizeByte = "5242880" // 5 * 1024 * 1024, 5MB
+
+        debug {
+            buildConfigField "int", "PAGE_SIZE", pageSize
+            buildConfigField "long", "CALL_TIME_OUT_SEC", callTimeOutSec
+            buildConfigField "long", "CACHE_STALE_SEC", cacheStaleSec
+            buildConfigField "long", "CACHE_SIZE_BYTE", cacheSizeByte
+        }
         release {
+            buildConfigField "int", "PAGE_SIZE", pageSize
+            buildConfigField "long", "CALL_TIME_OUT_SEC", callTimeOutSec
+            buildConfigField "long", "CACHE_STALE_SEC", cacheStaleSec
+            buildConfigField "long", "CACHE_SIZE_BYTE", cacheSizeByte
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -37,7 +53,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion '1.3.2'
     }
     packagingOptions {
         resources {
@@ -47,17 +63,58 @@ android {
 }
 
 dependencies {
+    def coreCtxVersion = "1.9.0"
+    def material3Version = "1.0.1"
+    def lifeCycleVersion = "2.5.1"
+    def activityComposeVersion = "1.6.1"
+    def daggerVersion = "2.44.2"
+    def timberVersion = "4.7.1"
+    def retrofitVersion = "2.9.0"
+    def interceptorVersion = "4.9.1"
+    def coilVersion = "2.1.0"
+    def shimmerVersion = "1.0.3"
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.3.1'
+    //Test
+    def junitVersion = "4.13.2"
+    def kotlinReflectVersion = "1.7.20"
+    def coreTestingVersion = "2.1.0"
+    def mockitoInlineVersion = "3.8.0"
+    def mockitoKotlinVersion = "4.1.0"
+
+    implementation "androidx.core:core-ktx:$coreCtxVersion"
     implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material3:material3:$material3Version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.compose.material3:material3:1.0.0-alpha02'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion"
+    implementation "androidx.activity:activity-compose:$activityComposeVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    // DI
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+
+    // Logging
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+
+    // Network
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$interceptorVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+    // Image loading
+    implementation "io.coil-kt:coil-compose:$coilVersion"
+
+    // Shimmer
+    implementation "com.valentinilk.shimmer:compose-shimmer:$shimmerVersion"
+
+    // Tests
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinReflectVersion"
+    testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
+    testImplementation "androidx.arch.core:core-testing:$coreTestingVersion"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
 }
