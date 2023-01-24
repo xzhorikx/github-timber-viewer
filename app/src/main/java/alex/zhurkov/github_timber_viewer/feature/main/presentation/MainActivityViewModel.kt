@@ -49,7 +49,10 @@ class MainActivityViewModel(
     override fun processAction(action: MainActivityAction) = when (action) {
         MainActivityAction.Refresh -> refreshContributors()
         is MainActivityAction.LastVisibleItemChanged -> {
-            sendChange(MainActivityChange.LastVisibleItemChanged(action.id))
+            if (action.id != state.lastVisibleItemId) {
+                sendChange(MainActivityChange.LastVisibleItemChanged(action.id))
+            }
+            Unit
         }
     }
 
@@ -60,7 +63,7 @@ class MainActivityViewModel(
 
     private fun refreshContributors() {
         sendChange(MainActivityChange.ItemsCleared)
-        loadContributorsPage(pageIndex = 0, isRefreshing = true)
+        loadContributorsPage(pageIndex = state.initialPageId, isRefreshing = true)
     }
 
     private fun loadContributorsPage(pageIndex: Int, isRefreshing: Boolean = false) {

@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,7 +58,7 @@ fun MainScreen(
         ) {
             Box(Modifier.pullRefresh(pullToRefreshState)) {
                 LazyColumn(
-                    modifier = modifier,
+                    modifier = modifier.testTag("item_container"),
                     state = state,
                     verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_4)),
                     contentPadding = PaddingValues(
@@ -83,6 +84,7 @@ fun MainScreen(
                             }
                             is GitHubContributorItem.Loading -> {
                                 ContributorLoading(
+                                    item = item,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(dimensionResource(id = R.dimen.shimmer_height))
@@ -120,7 +122,11 @@ fun ContributorPreview(
         imageLoader = imageLoader,
         error = ColorPainter(Color.Black),
     )
-    Row(modifier = modifier.clickable(onClick = { onClick(item) })) {
+    Row(
+        modifier = modifier
+            .clickable(onClick = { onClick(item) })
+            .testTag(item.id)
+    ) {
         Image(
             modifier = Modifier
                 .size(dimensionResource(id = R.dimen.avatar_size))
@@ -157,7 +163,8 @@ fun ContributorPreview(
 
 @Composable
 fun ContributorLoading(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    item: GitHubContributorItem.Loading
 ) {
     val shimmer = rememberShimmer(
         shimmerBounds = ShimmerBounds.Window,
@@ -176,6 +183,7 @@ fun ContributorLoading(
         modifier = modifier
             .shimmer(shimmer)
             .background(MaterialTheme.colorScheme.primaryContainer)
+            .testTag(item.id)
     )
 }
 

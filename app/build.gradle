@@ -82,6 +82,7 @@ dependencies {
     def mockitoInlineVersion = "3.8.0"
     def mockitoKotlinVersion = "4.1.0"
     def coroutineVersion = "1.6.2"
+    def mockkVersion = "1.12.3"
 
     implementation "androidx.core:core-ktx:$coreCtxVersion"
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -121,4 +122,8 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:$coreTestingVersion"
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    // Test rules and transitive dependencies:
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
 }

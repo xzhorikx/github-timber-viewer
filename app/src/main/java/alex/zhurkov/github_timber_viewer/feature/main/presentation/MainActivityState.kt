@@ -23,7 +23,10 @@ data class MainActivityState(
 
     val isLastPageLoaded = pages.any(GitHubContributorsPage::isLastPage)
 
-    val nextPage = isLastPageLoaded.whenFalse { (pages.lastOrNull()?.pageId ?: 0) + 1 }
+    val initialPageId = 1
+
+    val nextPage =
+        isLastPageLoaded.whenFalse { (pages.lastOrNull()?.pageId?.inc() ?: initialPageId) }
 
     val lastContributorId = pages.flatMap { it.contributors }.lastOrNull()?.id
 }

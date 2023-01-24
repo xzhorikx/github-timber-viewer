@@ -49,7 +49,6 @@ class MainActivity : ComponentActivity() {
             val scrollBehavior =
                 TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
             GithubtimberviewerTheme {
-                // A surface container using the 'background' color from the theme
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()
