@@ -26,10 +26,10 @@ class MainActivityViewModel(
     override var state = MainActivityState.EMPTY
     private var pageJob: Job? = null
     override fun onObserverActive(isFirstTime: Boolean) {
-        if (isFirstTime) {
-            loadContributorsPage(pageIndex = state.nextPage)
-        }
         super.onObserverActive(isFirstTime)
+        if (isFirstTime) {
+            state.nextPage?.let(::loadContributorsPage)
+        }
     }
 
     override suspend fun provideChangesObservable(): Flow<MainActivityChange> {
@@ -42,7 +42,7 @@ class MainActivityViewModel(
         val shouldLoadNextPage =
             isLastGifUpdated && newState.lastContributorId == newState.lastVisibleItemId
         shouldLoadNextPage.whenTrue {
-            loadContributorsPage(pageIndex = state.nextPage)
+            state.nextPage?.let(::loadContributorsPage)
         }
     }
 
@@ -67,6 +67,7 @@ class MainActivityViewModel(
         when (isRefreshing) {
             true -> pageJob?.cancel(CancellationException("Force refresh"))
             false -> {
+                if (state.isLastPageLoaded) return
                 if (state.isPageLoading) return
                 if (state.isPageLoaded(pageIndex)) return
             }

@@ -1,20 +1,16 @@
 package alex.zhurkov.github_timber_viewer.feature.main.ui
 
 import alex.zhurkov.github_timber_viewer.R
-import alex.zhurkov.github_timber_viewer.feature.main.model.GitHubContributerItem
+import alex.zhurkov.github_timber_viewer.feature.main.model.GitHubContributorItem
 import alex.zhurkov.github_timber_viewer.feature.main.presentation.MainActivityModel
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -26,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -33,6 +30,8 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.LiveData
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
@@ -46,6 +45,7 @@ fun MainScreen(
     uiModel: LiveData<MainActivityModel>,
     onPullToRefresh: () -> Unit,
     onLastItemVisible: (id: String) -> Unit,
+    onClick: (GitHubContributorItem.Data) -> Unit
 ) {
     val model by uiModel.observeAsState()
     model?.let { renderModel ->
@@ -68,16 +68,20 @@ fun MainScreen(
                         val lastVisibleId by remember {
                             derivedStateOf {
                                 with(state.layoutInfo) {
-                                    (visibleItemsInfo.lastOrNull()?.key as? String).takeIf { it == (item as? GitHubContributerItem.Data)?.id }
+                                    (visibleItemsInfo.lastOrNull()?.key as? String).takeIf { it == (item as? GitHubContributorItem.Data)?.id }
                                 }
                             }
                         }
                         lastVisibleId?.run(onLastItemVisible)
                         when (item) {
-                            is GitHubContributerItem.Data -> {
-                                ContributorPreview(item, modifier = Modifier.fillMaxWidth())
+                            is GitHubContributorItem.Data -> {
+                                ContributorPreview(
+                                    item,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onClick = onClick
+                                )
                             }
-                            is GitHubContributerItem.Loading -> {
+                            is GitHubContributorItem.Loading -> {
                                 ContributorLoading(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -97,10 +101,12 @@ fun MainScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ContributorPreview(
-    item: GitHubContributerItem.Data,
-    modifier: Modifier = Modifier
+    item: GitHubContributorItem.Data,
+    modifier: Modifier = Modifier,
+    onClick: (GitHubContributorItem.Data) -> Unit
 ) {
     val context = LocalContext.current
     val imageLoader = ImageLoader.Builder(context)
@@ -114,15 +120,38 @@ fun ContributorPreview(
         imageLoader = imageLoader,
         error = ColorPainter(Color.Black),
     )
-    Row(modifier = modifier) {
+    Row(modifier = modifier.clickable(onClick = { onClick(item) })) {
         Image(
             modifier = Modifier
+                .size(dimensionResource(id = R.dimen.avatar_size))
                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.corners_4))),
             painter = painter,
             contentDescription = "Contributor avatar",
             contentScale = ContentScale.Crop,
         )
-        Text(text = item.name)
+        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_16)))
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = item.name,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = pluralStringResource(
+                    id = R.plurals.contributions_template,
+                    item.contributions,
+                    item.contributions
+                ),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
 

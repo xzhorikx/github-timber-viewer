@@ -2,7 +2,7 @@ package alex.zhurkov.github_timber_viewer.feature.main.presentation
 
 import alex.zhurkov.github_timber_viewer.common.arch.StateToModelMapper
 import alex.zhurkov.github_timber_viewer.domain.model.GitHubContributorsPage
-import alex.zhurkov.github_timber_viewer.feature.main.model.GitHubContributerItem
+import alex.zhurkov.github_timber_viewer.feature.main.model.GitHubContributorItem
 
 class MainStateToModelMapper : StateToModelMapper<MainActivityState, MainActivityModel> {
     override fun mapStateToModel(state: MainActivityState): MainActivityModel {
@@ -15,16 +15,20 @@ class MainStateToModelMapper : StateToModelMapper<MainActivityState, MainActivit
 
     private fun mapContributors(
         pages: List<GitHubContributorsPage>, isPageLoading: Boolean
-    ): List<GitHubContributerItem> {
+    ): List<GitHubContributorItem> {
         val contributors = pages.flatMap { page ->
             page.contributors.map {
-                GitHubContributerItem.Data(
-                    id = it.id, name = it.login, avatar = it.avatar
+                GitHubContributorItem.Data(
+                    id = it.id,
+                    name = it.login,
+                    avatar = it.avatar,
+                    contributions = it.contributions,
+                    gitHubUrl = it.gitHubUrl
                 )
             }
         }
         val loadingIndicators = when (isPageLoading) {
-            true -> (0..7).map { GitHubContributerItem.Loading(id = "loading_$it") }
+            true -> (0..7).map { GitHubContributorItem.Loading(id = "loading_$it") }
             false -> emptyList()
         }
         return (contributors + loadingIndicators).distinctBy { it.id }

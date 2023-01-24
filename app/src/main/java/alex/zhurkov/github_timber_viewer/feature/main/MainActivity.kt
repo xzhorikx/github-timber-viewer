@@ -11,17 +11,20 @@ import alex.zhurkov.github_timber_viewer.feature.main.presentation.MainActivityV
 import alex.zhurkov.github_timber_viewer.feature.main.presentation.MainActivityViewModelFactory
 import alex.zhurkov.github_timber_viewer.feature.main.ui.MainScreen
 import alex.zhurkov.github_timber_viewer.ui.theme.GithubtimberviewerTheme
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Observer
@@ -42,13 +45,14 @@ class MainActivity : ComponentActivity() {
         component.inject(this)
         viewModel.observableEvents.observe(this, Observer(::renderEvent))
         setContent {
+            val context = LocalContext.current
             val scrollBehavior =
                 TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
             GithubtimberviewerTheme {
                 // A surface container using the 'background' color from the theme
                 Scaffold(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .nestedScroll(scrollBehavior.nestedScrollConnection),
                     topBar = {
                         TopAppBar(
@@ -58,17 +62,26 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { paddingValues ->
                     MainScreen(
-                        modifier = Modifier.padding(
-                            PaddingValues(
-                                start = dimensionResource(id = R.dimen.padding_16),
-                                end = dimensionResource(id = R.dimen.padding_16),
-                                top = paddingValues.calculateTopPadding(),
-                                bottom = paddingValues.calculateBottomPadding()
-                            )
-                        ),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                PaddingValues(
+                                    start = dimensionResource(id = R.dimen.padding_16),
+                                    end = dimensionResource(id = R.dimen.padding_16),
+                                    top = paddingValues.calculateTopPadding(),
+                                    bottom = paddingValues.calculateBottomPadding()
+                                )
+                            ),
                         uiModel = viewModel.observableModel,
                         onPullToRefresh = { viewModel.dispatch(MainActivityAction.Refresh) },
-                        onLastItemVisible = { viewModel.dispatch(MainActivityAction.LastVisibleItemChanged(id = it)) }
+                        onLastItemVisible = {
+                            viewModel.dispatch(MainActivityAction.LastVisibleItemChanged(id = it))
+                        },
+                        onClick = {
+                            context.startActivity(
+                                Intent(Intent.ACTION_VIEW, Uri.parse(it.gitHubUrl))
+                            )
+                        }
                     )
                 }
             }

@@ -6,7 +6,6 @@ import alex.zhurkov.github_timber_viewer.domain.mapper.Mapper
 import alex.zhurkov.github_timber_viewer.domain.model.GitHubContributor
 import alex.zhurkov.github_timber_viewer.domain.model.GitHubContributorsPage
 import alex.zhurkov.github_timber_viewer.domain.repository.GitHubRepository
-import kotlinx.coroutines.delay
 
 class GitHubRepositoryImpl(
     private val configSource: ConfigSource,
@@ -18,14 +17,15 @@ class GitHubRepositoryImpl(
             true -> "no-cache"
             false -> "public, max-stale=${configSource.cacheStaleSec}"
         }
-        val result = remoteSource.getContributorsPage(
+        val response = remoteSource.getContributorsPage(
             limit = configSource.pageSize,
             page = page,
             cacheControl = cacheControl
         )
         return GitHubContributorsPage(
             pageId = page,
-            contributors = result.map(contributorRemoteMapper::map)
+            isLastPage = response.isEmpty(),
+            contributors = response.map(contributorRemoteMapper::map)
         )
     }
 }

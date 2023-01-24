@@ -8,6 +8,8 @@ class ContributorMapper : Mapper<GitHubContributorResponse, GitHubContributor> {
     override fun map(from: GitHubContributorResponse): GitHubContributor = GitHubContributor(
         id = from.id,
         login = from.login,
-        avatar = from.avatar
+        avatar = from.avatar,
+        contributions = from.contributions,
+        gitHubUrl = from.gitHubUrl
     )
 }
