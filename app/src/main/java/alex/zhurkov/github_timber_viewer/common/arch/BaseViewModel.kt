@@ -92,7 +92,6 @@ abstract class BaseViewModel<A : UIAction, C : UIStateChange, S : UIState, M : U
                     }
                 }
                 .distinctUntilChanged()
-                .onStart { emit(state) }
                 .map { stateToModelMapper.mapStateToModel(it) }
                 .distinctUntilChanged()
                 .catch { e -> Timber.e(e) }
