@@ -40,9 +40,9 @@ class MainActivityViewModel(
 
     override fun onStateUpdated(oldState: MainActivityState, newState: MainActivityState) {
         super.onStateUpdated(oldState, newState)
-        val isLastGifUpdated = oldState.lastVisibleItemId != newState.lastVisibleItemId
+        val isLastVisibleItemUpdated = oldState.lastVisibleItemId != newState.lastVisibleItemId
         val shouldLoadNextPage =
-            isLastGifUpdated && newState.lastContributorId == newState.lastVisibleItemId
+            isLastVisibleItemUpdated && newState.lastContributorId == newState.lastVisibleItemId
         val isNetworkChanged =
             oldState.isNetworkConnected != null && (oldState.isNetworkConnected != newState.isNetworkConnected)
 
