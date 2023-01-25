@@ -3,7 +3,7 @@
 An Android application displaying one screen listing all the contributors of the Jake’s Wharton’s [Timber](https://github.com/JakeWharton/timber) Github project.
 
 ## Preview
-![](https://github.com/xzhorikx/github-timber-viewer/blob/main/app-demo.mp4)
+[Watch video preview Here](https://drive.google.com/file/d/1zQOPUbJNFPoXY-HdMTs5MziPZQMwfYbs/view?usp=share_link)
 
 ## Features
 - Material design
