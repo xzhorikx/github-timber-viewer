@@ -111,10 +111,12 @@ fun ContributorPreview(
     onClick: (GitHubContributorItem.Data) -> Unit
 ) {
     val context = LocalContext.current
-    val imageLoader = ImageLoader.Builder(context)
-        .placeholder(R.drawable.ic_loading_animated)
-        .error(R.drawable.ic_loading_error)
-        .build()
+    val imageLoader = remember {
+        ImageLoader.Builder(context)
+            .placeholder(R.drawable.ic_loading_animated)
+            .error(R.drawable.ic_loading_error)
+            .build()
+    }
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(context).data(data = item.avatar)
             .crossfade(true)

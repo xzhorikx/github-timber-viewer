@@ -7,7 +7,10 @@ plugins {
 android {
     namespace 'alex.zhurkov.github_timber_viewer'
     compileSdk 33
-
+    aaptOptions {
+        // Disabling PNG optimization to avoid AAPT error on Windows when signing APK
+        cruncherEnabled = false
+    }
     defaultConfig {
         applicationId "alex.zhurkov.github_timber_viewer"
         minSdk 24
@@ -38,7 +41,7 @@ android {
             buildConfigField "long", "CALL_TIME_OUT_SEC", callTimeOutSec
             buildConfigField "long", "CACHE_STALE_SEC", cacheStaleSec
             buildConfigField "long", "CACHE_SIZE_BYTE", cacheSizeByte
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

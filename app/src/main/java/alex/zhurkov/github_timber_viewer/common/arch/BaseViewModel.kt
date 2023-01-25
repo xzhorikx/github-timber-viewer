@@ -22,7 +22,7 @@ abstract class BaseViewModel<A : UIAction, C : UIStateChange, S : UIState, M : U
     protected abstract var state: S
     private val changes = MutableSharedFlow<C>(
         replay = 5,
-        extraBufferCapacity = 1,
+        extraBufferCapacity = 10,
         onBufferOverflow = BufferOverflow.SUSPEND
     )
     private val actions = Channel<A>(Channel.RENDEZVOUS)
