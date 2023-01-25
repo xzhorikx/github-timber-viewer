@@ -2,6 +2,7 @@ package alex.zhurkov.github_timber_viewer.feature.main.di
 
 import alex.zhurkov.github_timber_viewer.app.di.ActivityScope
 import alex.zhurkov.github_timber_viewer.domain.di.GitHubDomainModule
+import alex.zhurkov.github_timber_viewer.domain.di.NetworkConnectionModule
 import alex.zhurkov.github_timber_viewer.feature.main.MainActivity
 import dagger.BindsInstance
 import dagger.Subcomponent
@@ -10,6 +11,7 @@ import dagger.Subcomponent
 @Subcomponent(
     modules = [
         GitHubDomainModule::class,
+        NetworkConnectionModule::class,
         MainActivityPresentationModule::class
     ]
 )

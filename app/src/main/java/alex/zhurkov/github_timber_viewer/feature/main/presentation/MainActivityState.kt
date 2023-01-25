@@ -7,6 +7,7 @@ import alex.zhurkov.github_timber_viewer.domain.model.GitHubContributorsPage
 data class MainActivityState(
     val pages: List<GitHubContributorsPage>,
     val isPageLoading: Boolean,
+    val isNetworkConnected: Boolean?,
     val isRefreshing: Boolean,
     val lastVisibleItemId: String?
 ) : UIState {
@@ -17,6 +18,7 @@ data class MainActivityState(
             pages = emptyList(),
             isPageLoading = false,
             isRefreshing = false,
+            isNetworkConnected = null,
             lastVisibleItemId = null
         )
     }

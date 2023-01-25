@@ -5,18 +5,20 @@ import alex.zhurkov.github_timber_viewer.common.arch.Reducer
 import alex.zhurkov.github_timber_viewer.common.arch.StateToModelMapper
 import alex.zhurkov.github_timber_viewer.common.whenTrue
 import alex.zhurkov.github_timber_viewer.domain.usecase.GitHubContributorsUseCase
+import alex.zhurkov.github_timber_viewer.domain.usecase.NetworkConnectionUseCase
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.CancellationException
 
 class MainActivityViewModel(
     private val gitHubContributorsUseCase: GitHubContributorsUseCase,
+    private val networkConnectionUseCase: NetworkConnectionUseCase,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
     reducer: Reducer<MainActivityState, MainActivityChange>,
     stateToModelMapper: StateToModelMapper<MainActivityState, MainActivityModel>
@@ -32,17 +34,25 @@ class MainActivityViewModel(
         }
     }
 
-    override suspend fun provideChangesObservable(): Flow<MainActivityChange> {
-        return emptyFlow()
-    }
+    override suspend fun provideChangesObservable(): Flow<MainActivityChange> =
+        networkConnectionUseCase.observeConnectionState()
+            .map { MainActivityChange.NetworkChanged(isConnected = it) }
 
     override fun onStateUpdated(oldState: MainActivityState, newState: MainActivityState) {
         super.onStateUpdated(oldState, newState)
         val isLastGifUpdated = oldState.lastVisibleItemId != newState.lastVisibleItemId
         val shouldLoadNextPage =
             isLastGifUpdated && newState.lastContributorId == newState.lastVisibleItemId
+        val isNetworkChanged =
+            oldState.isNetworkConnected != null && (oldState.isNetworkConnected != newState.isNetworkConnected)
+
         shouldLoadNextPage.whenTrue {
             state.nextPage?.let(::loadContributorsPage)
+        }
+        isNetworkChanged.whenTrue {
+            newState.isNetworkConnected?.let {
+                sendEvent(MainActivityEvent.NetworkConnectionChanged(it))
+            }
         }
     }
 

@@ -2,6 +2,8 @@
     <string name="app_name">J.Wharton</string>
     <string name="app_bar_title">Timber Contributors</string>
     <string name="error_message_template">Error: %1$s</string>
+    <string name="network_restored">Connection restored</string>
+    <string name="error_network_disconnected">No connection</string>
     <plurals name="contributions_template">
         <item quantity="one">%1$d Contribution</item>
         <item quantity="other">%1$d Contributions</item>

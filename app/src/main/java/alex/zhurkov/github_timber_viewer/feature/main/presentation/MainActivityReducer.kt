@@ -9,5 +9,6 @@ class MainActivityReducer : Reducer<MainActivityState, MainActivityChange> {
         MainActivityChange.ItemsCleared -> state.copy(pages = emptyList())
         is MainActivityChange.RefreshChanged -> state.copy(isRefreshing = change.isRefreshing)
         is MainActivityChange.LastVisibleItemChanged -> state.copy(lastVisibleItemId = change.id)
+        is MainActivityChange.NetworkChanged -> state.copy(isNetworkConnected = change.isConnected)
     }
 }

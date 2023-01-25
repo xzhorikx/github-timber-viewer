@@ -9,4 +9,5 @@ sealed class MainActivityChange : UIStateChange {
     data class PageLoadingChanged(val isLoading: Boolean) : MainActivityChange()
     data class PageLoaded(val data: GitHubContributorsPage) : MainActivityChange()
     data class LastVisibleItemChanged(val id: String) : MainActivityChange()
+    data class NetworkChanged(val isConnected: Boolean) : MainActivityChange()
 }
