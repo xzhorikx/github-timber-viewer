@@ -1,4 +1,4 @@
-package alex.zhurkov.github_timber_viewer.domain.di
+package alex.zhurkov.github_timber_viewer.app.di
 
 import alex.zhurkov.github_timber_viewer.data.usecase.GitHubContributorsUseCaseImpl
 import alex.zhurkov.github_timber_viewer.domain.repository.GitHubRepository
