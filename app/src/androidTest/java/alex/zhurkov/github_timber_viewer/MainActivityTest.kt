@@ -16,7 +16,7 @@ import junit.framework.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
-class Test {
+class MainActivityTest {
     @get:Rule
     val rule = createAndroidComposeRule<ComponentActivity>()
 

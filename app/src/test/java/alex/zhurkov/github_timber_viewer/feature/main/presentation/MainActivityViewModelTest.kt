@@ -4,6 +4,7 @@ import alex.zhurkov.github_timber_viewer.common.arch.CoroutinesTestRule
 import alex.zhurkov.github_timber_viewer.common.arch.Reducer
 import alex.zhurkov.github_timber_viewer.common.arch.StateToModelMapper
 import alex.zhurkov.github_timber_viewer.domain.usecase.GitHubContributorsUseCase
+import alex.zhurkov.github_timber_viewer.domain.usecase.NetworkConnectionUseCase
 import alex.zhurkov.github_timber_viewer.utils.callPrivateFunc
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -37,6 +38,9 @@ class MainActivityViewModelTest {
     lateinit var gitHubContributorsUseCase: GitHubContributorsUseCase
 
     @Mock
+    lateinit var networkConnectionUseCase: NetworkConnectionUseCase
+
+    @Mock
     lateinit var reducer: Reducer<MainActivityState, MainActivityChange>
 
     @Mock
@@ -53,6 +57,7 @@ class MainActivityViewModelTest {
         viewModel = MainActivityViewModel(
             dispatcher = rule.testDispatcher,
             gitHubContributorsUseCase = gitHubContributorsUseCase,
+            networkConnectionUseCase = networkConnectionUseCase,
             reducer = reducer,
             stateToModelMapper = stateToModelMapper
         )
